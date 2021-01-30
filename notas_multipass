@@ -1,0 +1,23 @@
+HYPERVISOR VBOX:
+multipass set local.driver=virtualbox
+& $env:USERPROFILE\Downloads\PSTools\PsExec.exe -s -i $env:VBOX_MSI_INSTALL_PATH\VirtualBox.exe # abre VBOX y muestra las VMs
+& $env:USERPROFILE\Downloads\PSTools\PsExec.exe -s $env:VBOX_MSI_INSTALL_PATH\VBoxManage.exe list vms # lista las VMs
+& $env:USERPROFILE\Downloads\PSTools\PsExec.exe -s $env:VBOX_MSI_INSTALL_PATH\VBoxManage.exe controlvm "NOMBRE_VM" natpf1 "NOMBRE_SERVICIO,tcp,,PUERTO_VM,,PUERTO_LOCAL" # port-forwarding
+
+CMD:
+multipass find
+multipass launch # crea VM con nombre aleatorio
+multipass launch -n NOMBRE_VM
+multipass launch -n NOMBRE_VM --cloud-init cloud-config.yml
+multipass launch bionic -n NOMBRE_VM --network "Ethernet 2" --cpus 2 --mem 1024m --cloud-init cloud-config.yml -vvv 
+multipass list
+
+multipass delete NOMBRE_VM
+multipass purge
+
+multipass info NOMBRE_VM
+multipass networks
+multipass shell NOMBRE_VM
+multipass exec NOMBRE_VM -- ip a
+
+ssh -i c://Windows/System32/config/systemprofile/AppData/Roaming/multipassd/ssh-keys/id_rsa ubuntu@192.168.0.3

@@ -1,0 +1,28 @@
+users:
+  - name: quentin
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: sudo
+    shell: /bin/bash
+    lock_passwd: false
+    passwd: SHA512-HASH
+    ssh_authorized_keys:
+      - ssh-rsa pubkey
+
+package_update: true
+
+packages:
+  - docker.io
+  - curl
+
+write_files:
+  - content: |
+      Hola Mundo
+    owner: quentin:quentin
+    path: /home/quentin/test.txt
+    permissions: '0644'
+
+runcmd: 
+  - sed -i -e 's/#PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config
+  - sed -i -e 's/#PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config 
+  - sed -i -e 's/#Port 22/Port 3792/' /etc/ssh/sshd_config
+  - sudo service sshd restart
